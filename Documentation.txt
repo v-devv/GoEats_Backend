@@ -1,0 +1,23 @@
+Setup Node Js
+
+
+    multer
+Connection to Database
+
+Api creation:
+    1. Create a new file called `api.js` in the root directory of your project.
+    2. Import the `express` module and create a new instance of the `express` class.
+    3. Import the `mongoose` module and create a new instance of the `mongoose` class.
+    4. Create a new instance of the `express.Router` class and assign it to a variable called
+    `router`
+    5. Use the `router` instance to create routes for your API.
+    6. Use the `mongoose` instance to connect to your database.
+    7. Use the `express` instance to create a new server and listen on a port.
+    8. Use the `router` instance to handle incoming requests and send responses back to the client.
+    Models:
+        Vendor: username , email , password
+        Franchise : franchiseName , area , category ,region , offer , img , 
+    controllers :
+        VendorController
+    Routes:
+        VendorRoutes        
