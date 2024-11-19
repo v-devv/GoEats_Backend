@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const franchiseRoutes = require("./routes/franchiseRoutes")
 const productRoutes = require("./routes/productRoutes");
 const path = require("path");
+const cors = require("cors");
 
 
 
@@ -14,6 +15,8 @@ const PORT = process.env.PORT || 4000;
 
 dotENV.config()
 
+
+app.use(cors());
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log("Connected successfully "))
 .catch((error)=>console.log(error));

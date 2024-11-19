@@ -25,7 +25,7 @@ const franchiseShema = new mongoose.Schema({
         type:[
             {
                 type:String,
-                enum : ['North-Indian' , 'South-Indian' , 'Chinese' , 'Bakery']
+                enum : ['north-indian' , 'south-indian' , 'chinese' , 'bakery']
             }
         ]
     },
