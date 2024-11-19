@@ -16,26 +16,41 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage:storage});
 
-const addFranchise = async(req , res)=>{
-    try {
-    const { franchiseName , area , category ,region ,offer } = req.body;
-    const franchiseLogo = req.file?req.file.filename:undefined;
+const addFranchise = async (req, res) => {
+  try {
+    console.log(req.body);  // Debug form data
+    console.log(req.file);  // Debug uploaded file
+
+    const { franchiseName, area, category, region, offer } = req.body;
+    const franchiseLogo = req.file ? req.file.filename : undefined;
+
     const vendor = await Vendor.findById(req.vendorId);
-    if(!vendor){
-        return res.status(400).json({message:"Vendor not found"}) 
+    if (!vendor) {
+      return res.status(400).json({ message: "Vendor not found" });
     }
+
     const franchise = new Franchise({
-        franchiseName , area , category ,region ,offer ,franchiseLogo , vendor : vendor._id
+      franchiseName,
+      area,
+      category,
+      region,
+      offer,
+      franchiseLogo,
+      vendor: vendor._id,
     });
+
     const savedFranchise = await franchise.save();
     vendor.franchise.push(savedFranchise);
     await vendor.save();
 
-    return res.status(200).json({message:"franchise add successfully"})
-    } catch (error) {
-        return res.status(500).json({message:error.message})
-    }
-}
+    console.log(savedFranchise); // Debug database entry
+    return res.status(200).json({ message: "Franchise added successfully", savedFranchise });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error adding franchise", error: error.message });
+  }
+};
+
 const deleteFranchisebyId =async(req , res)=>{
   try{
       const franchiseId = req.params.franchiseId;
