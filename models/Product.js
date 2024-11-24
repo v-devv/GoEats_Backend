@@ -26,9 +26,7 @@ const productSchema = new mongoose.Schema({
             }
         ]
     },
-    bestSeller:{
-        type:String
-    },
+    bestSeller: { type: Boolean },
     franchise : [ {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Franchise'

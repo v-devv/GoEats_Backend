@@ -5,14 +5,13 @@ const multer = require('multer');
 const path = require("path")
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'uploads/'); // Folder where images will be stored
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); // Unique file name
-    }
-  });
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Folder where images will be stored
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Unique file name
+  }
+});
 
 const upload = multer({storage:storage});
 
@@ -28,7 +27,9 @@ const addFranchise = async (req, res) => {
     if (!vendor) {
       return res.status(400).json({ message: "Vendor not found" });
     }
-
+    if(vendor.franchise.length > 0){
+      return res.status(400).json({message : "One Vendor can have only one franchise"})
+    }
     const franchise = new Franchise({
       franchiseName,
       area,
@@ -40,11 +41,12 @@ const addFranchise = async (req, res) => {
     });
 
     const savedFranchise = await franchise.save();
+    const franchiseId = savedFranchise._id;
     vendor.franchise.push(savedFranchise);
     await vendor.save();
 
     console.log(savedFranchise); // Debug database entry
-    return res.status(200).json({ message: "Franchise added successfully", savedFranchise });
+    return res.status(200).json({ message: "Franchise added successfully", savedFranchise ,franchiseId });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error adding franchise", error: error.message });

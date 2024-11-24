@@ -8,33 +8,48 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/'); // Folder where images will be stored
     },
     filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)); // Unique file name
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique file name
     }
   });
 const upload = multer({storage:storage});
-const addProduct = async(req , res)=>{
-    try{
-        const {productName  , productPrice , productCategory ,bestSeller ,productDescription} = req.body;
-        const productImage = req.fieldname ? file.filename: undefined;
-        const franchiseId = req.params.franchiseId;
-        const franchise = await Franchise.findById(franchiseId);
-        if(!franchise){
-            return res.status(404).json({message : "Franchise not found"})
-        }
-        const product = new Product({
-            productName , productPrice , productCategory ,bestSeller ,productDescription , productImage , franchise:franchise._id 
+const addProduct = async (req, res) => {
+    try {
+      const { productName, productPrice, productCategory, productDescription } = req.body;
+      
+      // Convert bestSeller to boolean
+      const bestSeller = req.body.bestSeller === "true" 
 
-        })
-        const savedProducts = await product.save();
-        /* franchise.products.push(savedProducts); */
-        await franchise.save();
-        res.status(200).json({message : "Product added successfully" , product : savedProducts})
-    }catch(error){
-        console.error(error)
-        res.status(500).json({message : "Error adding product" , error : error.message})
+      const productImage = req.file ? req.file.filename : undefined;
+      const franchiseId = req.params.franchiseId;
+  
+      // Find the franchise by ID
+      const franchise = await Franchise.findById(franchiseId);
+      if (!franchise) {
+        return res.status(404).json({ message: "Franchise not found" });
+      }
+  
+      // Create a new product
+      const product = new Product({
+        productName,
+        productPrice,
+        productCategory,
+        bestSeller, // Save the validated boolean value here
+        productDescription,
+        productImage,
+        franchise: franchise._id
+      });
+  
+      // Save the product and update franchise
+      const savedProducts = await product.save();
+      await franchise.save();
+  
+      res.status(200).json({ message: "Product added successfully", product: savedProducts });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error adding product", error: error.message });
     }
-}
+  };
+  
 
 const getProductByFranchise = async(req , res)=>{
     try{
@@ -55,13 +70,13 @@ const getProductByFranchise = async(req , res)=>{
 const deleteProductbyId =async(req , res)=>{
     try{
         const productId = req.params.productId;
-
+        console.log("Deleting product with ID:", productId);
         const deleteProduct = await Product.findByIdAndDelete(productId);
         if(!deleteProduct){
             return res.status(404).json({message : "Product not found"})
         }
         res.status(200).json({message : "Product deleted successfully" , deleteProduct})
-    }catch{
+    }catch(error){
         console.error(error);
         res.status(500).json({message : "Error deleting product" , error : error.message})
     }
