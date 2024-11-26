@@ -58,7 +58,7 @@ const getProductByFranchise = async(req , res)=>{
         }
         const products = await Product.find({franchise : franchiseId});
         const franchiseName = franchise.franchiseName;
-        res.status(200).json({message : "Products found successfully" ,franchiseName, products : products})
+        res.status(200).json({message : "Products found successfully" ,franchiseName, products})
     }catch(error){
         console.error(error);
         res.status(500).json({message : "Error getting products" , error : error.message})
