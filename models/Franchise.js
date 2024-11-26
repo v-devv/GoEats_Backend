@@ -39,13 +39,13 @@ const franchiseShema = new mongoose.Schema({
     vendor:[
         {
             type:mongoose.Schema.Types.ObjectId,
-            ref:'vendor'
+            ref:'Vendor'
         }
     ],
     products: [
         {
             type:mongoose.Schema.Types.ObjectId,
-            ref:'product'
+            ref:'Product'
         }
     ]
 
@@ -53,6 +53,6 @@ const franchiseShema = new mongoose.Schema({
 });
 
 
-/* const Franchise = mongoose.model('Franchise',franchiseShema);
-module.exports = Franchise; */
-module.exports = mongoose.model("Franchise", franchiseShema);
+const Franchise = mongoose.model('Franchise' , franchiseShema);
+
+module.exports = Franchise

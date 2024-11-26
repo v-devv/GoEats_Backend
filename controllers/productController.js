@@ -15,8 +15,7 @@ const upload = multer({storage:storage});
 const addProduct = async (req, res) => {
     try {
       const { productName, productPrice, productCategory, productDescription } = req.body;
-      
-      // Convert bestSeller to boolean
+     
       const bestSeller = req.body.bestSeller === "true" 
 
       const productImage = req.file ? req.file.filename : undefined;
@@ -27,26 +26,25 @@ const addProduct = async (req, res) => {
       if (!franchise) {
         return res.status(404).json({ message: "Franchise not found" });
       }
-  
-      // Create a new product
+
       const product = new Product({
         productName,
         productPrice,
         productCategory,
-        bestSeller, // Save the validated boolean value here
+        bestSeller, 
         productDescription,
         productImage,
         franchise: franchise._id
       });
   
-      // Save the product and update franchise
       const savedProducts = await product.save();
-      await franchise.save();
+      franchise.products.push(savedProducts) 
+      await franchise.save()
   
-      res.status(200).json({ message: "Product added successfully", product: savedProducts });
+      res.status(200).json({ message: "Product added successfully", savedProducts });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error adding product", error: error.message });
+      res.status(500).json({ message: "Error adding  product", error: error.message });
     }
   };
   

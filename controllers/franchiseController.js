@@ -41,12 +41,20 @@ const addFranchise = async (req, res) => {
     });
 
     const savedFranchise = await franchise.save();
+
     const franchiseId = savedFranchise._id;
+
+    const vendorFranchiseName = savedFranchise.franchiseName
+
     vendor.franchise.push(savedFranchise);
+
+
+
+
     await vendor.save();
 
     console.log(savedFranchise); // Debug database entry
-    return res.status(200).json({ message: "Franchise added successfully", savedFranchise ,franchiseId });
+    return res.status(200).json({ message: "Franchise added successfully", vendorFranchiseName ,franchiseId });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error adding franchise", error: error.message });
